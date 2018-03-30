@@ -45,6 +45,9 @@ class RichText extends AbstractShape implements ComparableInterface
     public const OVERFLOW_CLIP = 'clip';
     public const OVERFLOW_OVERFLOW = 'overflow';
 
+    /** Preset Geometry */
+    const RECTANGLE_GEOMETRY_PRESET = 'rect';
+
     /**
      * Rich text paragraphs.
      *
@@ -172,7 +175,13 @@ class RichText extends AbstractShape implements ComparableInterface
     private $lnSpcReduction;
 
     /**
-     * Create a new \PhpOffice\PhpPresentation\Shape\RichText instance.
+     * The geometry preset
+     * @var string
+     */
+    private $geometryPreset = self::RECTANGLE_GEOMETRY_PRESET;
+
+    /**
+     * Create a new \PhpOffice\PhpPresentation\Shape\RichText instance
      */
     public function __construct()
     {
@@ -708,6 +717,26 @@ class RichText extends AbstractShape implements ComparableInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Set geometry preset
+     * @param string $value
+     */
+    public function setGeometryPreset($value = null)
+    {
+        if (is_string($value)) {
+            $this->geometryPreset = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGeometryPreset()
+    {
+        return $this->geometryPreset;
     }
 
     /**
