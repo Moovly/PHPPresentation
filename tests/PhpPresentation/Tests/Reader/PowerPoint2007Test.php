@@ -19,6 +19,7 @@ namespace PhpOffice\PhpPresentation\Tests\Reader;
 
 use PhpOffice\PhpPresentation\DocumentLayout;
 use PhpOffice\PhpPresentation\Reader\PowerPoint2007;
+use PhpOffice\PhpPresentation\Shape\RichText;
 use PhpOffice\PhpPresentation\Style\Alignment;
 use PhpOffice\PhpPresentation\Style\Bullet;
 use PHPUnit\Framework\TestCase;
@@ -122,6 +123,7 @@ class PowerPoint2007Test extends TestCase
         $this->assertEquals(600, $oShape->getWidth());
         $this->assertEquals(10, $oShape->getOffsetX());
         $this->assertEquals(400, $oShape->getOffsetY());
+        $this->assertEquals(RichText::RECTANGLE_GEOMETRY_PRESET, $oShape->getGeometryPreset());
         $this->assertEquals(Alignment::HORIZONTAL_LEFT, $oShape->getActiveParagraph()->getAlignment()->getHorizontal());
         $arrayParagraphs = $oShape->getParagraphs();
         $this->assertCount(1, $arrayParagraphs);
