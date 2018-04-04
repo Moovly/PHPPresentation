@@ -117,7 +117,7 @@ class Alignment implements ComparableInterface
     public function __construct()
     {
         // Initialise values
-        $this->horizontal          = self::HORIZONTAL_LEFT;
+        //$this->horizontal          = self::HORIZONTAL_LEFT;
         $this->vertical            = self::VERTICAL_BASE;
     }
 
