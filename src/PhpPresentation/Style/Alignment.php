@@ -132,6 +132,13 @@ class Alignment implements ComparableInterface
      */
     private $hashIndex;
 
+    public function __construct()
+    {
+        // Initialise values
+        //$this->horizontal          = self::HORIZONTAL_LEFT;
+        $this->vertical            = self::VERTICAL_BASE;
+    }
+
     /**
      * Get Horizontal.
      */
