@@ -469,8 +469,8 @@ class PowerPoint2007 implements ReaderInterface
                         if ($oElementLvl->nodeName == 'a:defPPr') {
                             $level = 0;
                         } else {
-                            $level = str_replace('a:lvl', '', $oElementLvl->nodeName);
-                            $level = str_replace('pPr', '', $level);
+                            $level = (int)str_replace('a:lvl', '', $oElementLvl->nodeName);
+                            $level = (int)str_replace('pPr', '', $level);
                         }
 
                         if ($oElementLvl->hasAttribute('algn')) {
