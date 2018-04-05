@@ -830,17 +830,20 @@ class PowerPoint2007 implements ReaderInterface
 
         $oElement = $document->getElement('p:nvSpPr/p:nvPr/p:ph', $node);
         if ($oElement instanceof \DOMElement) {
+            $placeholder = new Placeholder(null);
             if ($oElement->hasAttribute('type')) {
-                $placeholder = new Placeholder($oElement->getAttribute('type'));
-                $oShape->setPlaceHolder($placeholder);
+                $placeholder->setType($oElement->getAttribute('type'));
             }
+            if ($oElement->hasAttribute('idx')) {
+                $placeholder->setType($oElement->getAttribute('idx'));
+            }
+            $oShape->setPlaceHolder($placeholder);
         }
 
         $arrayElements = $document->getElements('p:txBody/a:lstStyle/*', $node);
         foreach ($arrayElements as $arrayElement) {
             $level = (int)str_replace('a:lvl', '', $arrayElement->nodeName);
             $level = (int)str_replace('pPr', '', $level);
-            $oShape->setTextStyles(new TextStyle(false));
 
             $oRTParagraph = $this->createParagraphFromStyle($document, $arrayElement);
             $oShape->getTextStyles()->setOtherStyleAtLvl($oRTParagraph, $level);
