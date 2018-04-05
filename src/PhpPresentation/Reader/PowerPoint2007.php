@@ -519,47 +519,12 @@ class PowerPoint2007 implements ReaderInterface
 
             // TextStyles
             $arrayElementTxStyles = $xmlReader->getElements('/p:sldMaster/p:txStyles/*');
-            foreach ($arrayElementTxStyles as $oElementTxStyle) {
-                $arrayElementsLvl = $xmlReader->getElements('/p:sldMaster/p:txStyles/' . $oElementTxStyle->nodeName . '/*');
-                foreach ($arrayElementsLvl as $oElementLvl) {
-                    if (!($oElementLvl instanceof DOMElement) || 'a:extLst' == $oElementLvl->nodeName) {
-                        continue;
-                    }
-                    $oRTParagraph = new Paragraph();
-
-                    if ('a:defPPr' == $oElementLvl->nodeName) {
-                        $level = 0;
-                    } else {
-                        $level = str_replace('a:lvl', '', $oElementLvl->nodeName);
-                        $level = str_replace('pPr', '', $level);
-                        $level = intval($level);
-                    }
-
-                    if ($oElementLvl->hasAttribute('algn')) {
-                        $oRTParagraph->getAlignment()->setHorizontal($oElementLvl->getAttribute('algn'));
-                    }
-                    if ($oElementLvl->hasAttribute('marL')) {
-                        $val = (int) $oElementLvl->getAttribute('marL');
-                        $val = CommonDrawing::emuToPixels((int) $val);
-                        $oRTParagraph->getAlignment()->setMarginLeft($val);
-                    }
-                    if ($oElementLvl->hasAttribute('marR')) {
-                        $val = (int) $oElementLvl->getAttribute('marR');
-                        $val = CommonDrawing::emuToPixels((int) $val);
-                        $oRTParagraph->getAlignment()->setMarginRight($val);
-                    }
-                    if ($oElementLvl->hasAttribute('indent')) {
-                        $val = (int) $oElementLvl->getAttribute('indent');
-                        $val = CommonDrawing::emuToPixels((int) $val);
-                        $oRTParagraph->getAlignment()->setIndent($val);
-                    }
-                    $oElementLvlDefRPR = $xmlReader->getElement('a:defRPr', $oElementLvl);
-                    if ($oElementLvlDefRPR instanceof DOMElement) {
-                        if ($oElementLvlDefRPR->hasAttribute('sz')) {
-                            $oRTParagraph->getFont()->setSize($oElementLvlDefRPR->getAttribute('sz') / 100);
-                        }
-                        if ($oElementLvlDefRPR->hasAttribute('b') && 1 == $oElementLvlDefRPR->getAttribute('b')) {
-                            $oRTParagraph->getFont()->setBold(true);
+            if ($arrayElementTxStyles) {
+                foreach ($arrayElementTxStyles as $oElementTxStyle) {
+                    $arrayElementsLvl = $xmlReader->getElements('/p:sldMaster/p:txStyles/' . $oElementTxStyle->nodeName . '/*');
+                    foreach ($arrayElementsLvl as $oElementLvl) {
+                        if (!($oElementLvl instanceof \DOMElement) || $oElementLvl->nodeName == 'a:extLst') {
+                            continue;
                         }
                         if ($oElementLvlDefRPR->hasAttribute('i') && 1 == $oElementLvlDefRPR->getAttribute('i')) {
                             $oRTParagraph->getFont()->setItalic(true);
@@ -572,7 +537,6 @@ class PowerPoint2007 implements ReaderInterface
                             $oSchemeColor->setValue($oElementSchemeColor->getAttribute('val'));
                             $oRTParagraph->getFont()->setColor($oSchemeColor);
                         }
-                    }
 
                     switch ($oElementTxStyle->nodeName) {
                         case 'p:bodyStyle':
@@ -729,11 +693,13 @@ class PowerPoint2007 implements ReaderInterface
                         unset($pathImage[$key]);
                     }
                 }
+
                 $pathImage = implode('/', $pathImage);
                 $contentImg = $this->oZip->getFromName($pathImage);
 
                 $tmpBkgImg = tempnam(sys_get_temp_dir(), 'PhpPresentationReaderPpt2007Bkg');
                 file_put_contents($tmpBkgImg, $contentImg);
+
                 // Background
                 $oBackground = new Slide\Background\Image();
                 $oBackground->setPath($tmpBkgImg);
@@ -933,6 +899,16 @@ class PowerPoint2007 implements ReaderInterface
             }
         }
 
+        $arrayElements = $document->getElements('p:txBody/a:lstStyle/*', $node);
+        foreach ($arrayElements as $arrayElement) {
+            $level = (int)str_replace('a:lvl', '', $arrayElement->nodeName);
+            $level = (int)str_replace('pPr', '', $level);
+            $oShape->setTextStyles(new TextStyle(false));
+
+            $oRTParagraph = $this->createParagraphFromStyle($document, $arrayElement);
+            $oShape->getTextStyles()->setOtherStyleAtLvl($oRTParagraph, $level);
+        }
+
         $arrayElements = $document->getElements('p:txBody/a:p', $node);
         foreach ($arrayElements as $oElement) {
             if ($oElement instanceof DOMElement) {
@@ -1093,7 +1069,7 @@ class PowerPoint2007 implements ReaderInterface
         $oParagraph->setRichTextElements([]);
 
         $oSubElement = $document->getElement('a:pPr', $oElement);
-        if ($oSubElement instanceof DOMElement) {
+        if ($oSubElement instanceof \DOMElement) {
             if ($oSubElement->hasAttribute('algn')) {
                 $oParagraph->getAlignment()->setHorizontal($oSubElement->getAttribute('algn'));
             }
@@ -1380,5 +1356,56 @@ class PowerPoint2007 implements ReaderInterface
                     //throw new FeatureNotImplementedException();
             }
         }
+    }
+
+
+    /**
+     * @param XMLReader $xmlReader
+     * @param \DOMElement $oElementLvl
+     * @return Paragraph
+     */
+    private function createParagraphFromStyle(XMLReader $xmlReader, \DOMElement $oElementLvl): Paragraph
+    {
+        $oRTParagraph = new Paragraph();
+
+        if ($oElementLvl->hasAttribute('algn')) {
+            $oRTParagraph->getAlignment()->setHorizontal($oElementLvl->getAttribute('algn'));
+        }
+        if ($oElementLvl->hasAttribute('marL')) {
+            $val = $oElementLvl->getAttribute('marL');
+            $val = CommonDrawing::emuToPixels($val);
+            $oRTParagraph->getAlignment()->setMarginLeft($val);
+        }
+        if ($oElementLvl->hasAttribute('marR')) {
+            $val = $oElementLvl->getAttribute('marR');
+            $val = CommonDrawing::emuToPixels($val);
+            $oRTParagraph->getAlignment()->setMarginRight($val);
+        }
+        if ($oElementLvl->hasAttribute('indent')) {
+            $val = $oElementLvl->getAttribute('indent');
+            $val = CommonDrawing::emuToPixels($val);
+            $oRTParagraph->getAlignment()->setIndent($val);
+        }
+        $oElementLvlDefRPR = $xmlReader->getElement('a:defRPr', $oElementLvl);
+        if ($oElementLvlDefRPR instanceof \DOMElement) {
+            if ($oElementLvlDefRPR->hasAttribute('sz')) {
+                $oRTParagraph->getFont()->setSize($oElementLvlDefRPR->getAttribute('sz') / 100);
+            }
+            if ($oElementLvlDefRPR->hasAttribute('b') && $oElementLvlDefRPR->getAttribute('b') == 1) {
+                $oRTParagraph->getFont()->setBold(true);
+            }
+            if ($oElementLvlDefRPR->hasAttribute('i') && $oElementLvlDefRPR->getAttribute('i') == 1) {
+                $oRTParagraph->getFont()->setItalic(true);
+            }
+        }
+        $oElementSchemeColor = $xmlReader->getElement('a:defRPr/a:solidFill/a:schemeClr', $oElementLvl);
+        if ($oElementSchemeColor instanceof \DOMElement) {
+            if ($oElementSchemeColor->hasAttribute('val')) {
+                $oSchemeColor = new SchemeColor();
+                $oSchemeColor->setValue($oElementSchemeColor->getAttribute('val'));
+                $oRTParagraph->getFont()->setColor($oSchemeColor);
+            }
+        }
+        return $oRTParagraph;
     }
 }

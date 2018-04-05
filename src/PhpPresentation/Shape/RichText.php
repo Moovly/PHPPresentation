@@ -25,6 +25,7 @@ use PhpOffice\PhpPresentation\ComparableInterface;
 use PhpOffice\PhpPresentation\Exception\OutOfBoundsException;
 use PhpOffice\PhpPresentation\Shape\RichText\Paragraph;
 use PhpOffice\PhpPresentation\Shape\RichText\TextElementInterface;
+use PhpOffice\PhpPresentation\Style\TextStyle;
 
 /**
  * \PhpOffice\PhpPresentation\Shape\RichText.
@@ -181,6 +182,11 @@ class RichText extends AbstractShape implements ComparableInterface
     private $geometryPreset = self::RECTANGLE_GEOMETRY_PRESET;
 
     /**
+     * @var \PhpOffice\PhpPresentation\Style\TextStyle
+     */
+    protected $textStyles;
+
+    /**
      * Create a new \PhpOffice\PhpPresentation\Shape\RichText instance
      */
     public function __construct()
@@ -189,6 +195,8 @@ class RichText extends AbstractShape implements ComparableInterface
         $this->richTextParagraphs = [
             new Paragraph(),
         ];
+
+        $this->textStyles = new TextStyle(false);
 
         // Initialize parent
         parent::__construct();
@@ -740,7 +748,25 @@ class RichText extends AbstractShape implements ComparableInterface
     }
 
     /**
-     * Get hash code.
+     * @return TextStyle
+     */
+    public function getTextStyles()
+    {
+        return $this->textStyles;
+    }
+
+    /**
+     * @param TextStyle $textStyle
+     * @return $this
+     */
+    public function setTextStyles(TextStyle $textStyle)
+    {
+        $this->textStyles = $textStyle;
+        return $this;
+    }
+
+    /**
+     * Get hash code
      *
      * @return string Hash code
      */
