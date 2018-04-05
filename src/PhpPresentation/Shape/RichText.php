@@ -21,6 +21,7 @@ use PhpOffice\PhpPresentation\AbstractShape;
 use PhpOffice\PhpPresentation\ComparableInterface;
 use PhpOffice\PhpPresentation\Shape\RichText\Paragraph;
 use PhpOffice\PhpPresentation\Shape\RichText\TextElementInterface;
+use PhpOffice\PhpPresentation\Style\TextStyle;
 
 /**
  * \PhpOffice\PhpPresentation\Shape\RichText
@@ -146,13 +147,13 @@ class RichText extends AbstractShape implements ComparableInterface
      * @var boolean
      */
     private $autoShrinkVertical;
-    
+
     /**
      * The percentage of the original font size to which the text is scaled
      * @var float
      */
     private $fontScale;
-    
+
     /**
      * The percentage of the reduction of the line spacing
      * @var float
@@ -166,6 +167,11 @@ class RichText extends AbstractShape implements ComparableInterface
     private $geometryPreset = self::RECTANGLE_GEOMETRY_PRESET;
 
     /**
+     * @var \PhpOffice\PhpPresentation\Style\TextStyle
+     */
+    protected $textStyles;
+
+    /**
      * Create a new \PhpOffice\PhpPresentation\Shape\RichText instance
      */
     public function __construct()
@@ -175,6 +181,8 @@ class RichText extends AbstractShape implements ComparableInterface
             new Paragraph()
         );
         $this->activeParagraph    = 0;
+
+        $this->textStyles = new TextStyle(false);
 
         // Initialize parent
         parent::__construct();
@@ -434,11 +442,11 @@ class RichText extends AbstractShape implements ComparableInterface
     public function setAutoFit($value = self::AUTOFIT_DEFAULT, $fontScale = null, $lnSpcReduction = null)
     {
         $this->autoFit = $value;
-        
+
         if (!is_null($fontScale)) {
             $this->fontScale = $fontScale;
         }
-        
+
         if (!is_null($lnSpcReduction)) {
             $this->lnSpcReduction = $lnSpcReduction;
         }
@@ -670,7 +678,7 @@ class RichText extends AbstractShape implements ComparableInterface
         }
         return $this;
     }
-    
+
     /**
      * Get horizontal auto shrink
      * @return bool
@@ -692,7 +700,7 @@ class RichText extends AbstractShape implements ComparableInterface
         }
         return $this;
     }
-    
+
     /**
      * Set vertical auto shrink
      * @return bool
@@ -720,6 +728,24 @@ class RichText extends AbstractShape implements ComparableInterface
     public function getGeometryPreset()
     {
         return $this->geometryPreset;
+    }
+
+    /**
+     * @return TextStyle
+     */
+    public function getTextStyles()
+    {
+        return $this->textStyles;
+    }
+
+    /**
+     * @param TextStyle $textStyle
+     * @return $this
+     */
+    public function setTextStyles(TextStyle $textStyle)
+    {
+        $this->textStyles = $textStyle;
+        return $this;
     }
 
     /**
