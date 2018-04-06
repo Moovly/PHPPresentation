@@ -22,6 +22,16 @@ class SchemeColor extends Color
     protected $value;
 
     /**
+     * SchemeColor constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct(null);
+    }
+
+    //add lummod
+
+    /**
      * @return string
      */
     public function getValue()

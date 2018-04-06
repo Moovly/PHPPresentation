@@ -75,7 +75,7 @@ class Paragraph implements ComparableInterface
         // Initialise variables
         $this->richTextElements = array();
         $this->alignment = new Alignment();
-        $this->font = new Font();
+        $this->font = new Font(false);
         $this->bulletStyle = new Bullet();
     }
 
