@@ -94,7 +94,7 @@ class Paragraph implements ComparableInterface
     public function __construct()
     {
         $this->alignment = new Alignment();
-        $this->font = new Font();
+        $this->font = new Font(false);
         $this->bulletStyle = new Bullet();
     }
 

@@ -135,9 +135,25 @@ class Font implements ComparableInterface
      */
     private $hashIndex;
 
-    public function __construct()
+    /**
+     * Create a new \PhpOffice\PhpPresentation\Style\Font
+     * @param bool $default
+     */
+    public function __construct($default = true)
     {
-        $this->color = new Color(Color::COLOR_BLACK);
+        if ($default) {
+            // Initialise values
+            $this->name             = 'Calibri';
+            $this->size             = 10;
+            $this->characterSpacing = 0;
+            $this->bold             = false;
+            $this->italic           = false;
+            $this->superScript      = false;
+            $this->subScript        = false;
+            $this->underline        = self::UNDERLINE_NONE;
+            $this->strikethrough    = false;
+            $this->color            = new Color(Color::COLOR_BLACK);
+        }
     }
 
     /**

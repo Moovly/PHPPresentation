@@ -22,10 +22,17 @@ namespace PhpOffice\PhpPresentation\Style;
 
 class SchemeColor extends Color
 {
-    /**
-     * @var string
-     */
     protected $value;
+
+    /**
+     * SchemeColor constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct(null);
+    }
+
+    //add lummod
 
     public function getValue(): string
     {
