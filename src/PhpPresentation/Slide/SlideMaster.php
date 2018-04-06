@@ -167,4 +167,20 @@ class SlideMaster extends AbstractSlide implements ComparableInterface, ShapeCon
     {
         return $this->arraySchemeColor;
     }
+
+    /**
+     * @return ColorMap
+     */
+    public function getColorMap(): ColorMap
+    {
+        return $this->colorMap;
+    }
+
+    /**
+     * @param ColorMap $colorMap
+     */
+    public function setColorMap(ColorMap $colorMap)
+    {
+        $this->colorMap = $colorMap;
+    }
 }
