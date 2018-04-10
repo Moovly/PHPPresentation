@@ -828,6 +828,33 @@ class PowerPoint2007 implements ReaderInterface
             $oShape->setGeometryPreset($oElement->getAttribute('prst'));
         }
 
+        $oFillColor = null;
+
+        $oElement = $document->getElement('p:style/a:fillRef/a:schemeClr', $node);
+        if ($oElement instanceof \DOMElement && $oElement->hasAttribute('val')) {
+            $oFillColor = new SchemeColor();
+            $oFillColor->setValue($oElement->getAttribute('val'));
+        }
+
+        $oElement = $document->getElement('p:spPr/a:solidFill/a:schemeClr', $node);
+        if ($oElement instanceof \DOMElement && $oElement->hasAttribute('val')) {
+            $oFillColor = new SchemeColor();
+            $oFillColor->setValue($oElement->getAttribute('val'));
+        }
+
+        $oElement = $document->getElement('p:spPr/a:solidFill/a:srgbClr', $node);
+        if ($oElement instanceof \DOMElement && $oElement->hasAttribute('val')) {
+            $oFillColor = new Color();
+            $oFillColor->setRGB($oElement->getAttribute('val'));
+        }
+
+        if ($oFillColor) {
+            $oFill = new Fill();
+            $oFill->setFillType(Fill::FILL_SOLID);
+            $oFill->setStartColor($oFillColor);
+            $oShape->setFill($oFill);
+        }
+
         $oElement = $document->getElement('p:nvSpPr/p:nvPr/p:ph', $node);
         if ($oElement instanceof \DOMElement) {
             $placeholder = new Placeholder(null);
