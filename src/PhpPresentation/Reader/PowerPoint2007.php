@@ -770,7 +770,11 @@ class PowerPoint2007 implements ReaderInterface
                         $info = getimagesizefromstring($imageFile);
                         $oShape->setMimeType($info['mime']);
                         $oShape->setRenderingFunction(str_replace('/', '', $info['mime']));
-                        $oShape->setImageResource(imagecreatefromstring($imageFile));
+                        $imageResource = @imagecreatefromstring($imageFile);
+                        if ($imageResource === false) {
+                            return;
+                        }
+                        $oShape->setImageResource($imageResource);
                     } elseif ($oShape instanceof Base64) {
                         $oShape->setData('data:image/svg+xml;base64,' . base64_encode($imageFile));
                     }
