@@ -725,10 +725,14 @@ class PowerPoint2007 implements ReaderInterface
                 $pathImage = implode('/', $pathImage);
                 $imageFile = $this->oZip->getFromName($pathImage);
                 if (!empty($imageFile)) {
+                    $imageResource = @imagecreatefromstring($imageFile);
+                    if ($imageResource === false) {
+                        return;
+                    }
+                    $oShape->setImageResource($imageResource);
                     $info = getimagesizefromstring($imageFile);
                     $oShape->setMimeType($info['mime']);
                     $oShape->setRenderingFunction(str_replace('/', '', $info['mime']));
-                    $oShape->setImageResource(imagecreatefromstring($imageFile));
                 }
             }
         }
