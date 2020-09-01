@@ -1161,6 +1161,13 @@ class PowerPoint2007 implements ReaderInterface
                         $oColor->setRGB($oElementSrgbClr->getAttribute('val'));
                         $oText->getFont()->setColor($oColor);
                     }
+                    $oElementSchemeColor = $document->getElement('a:solidFill/a:schemeClr', $oElementrPr);
+                    if (is_object($oElementSchemeColor) && $oElementSchemeColor->hasAttribute('val')) {
+                        $oSchemeColor = new SchemeColor();
+                        $oSchemeColor->setValue($oElementSchemeColor->getAttribute('val'));
+                        $oText->getFont()->setColor($oSchemeColor);
+                    }
+
                     // Hyperlink
                     $oElementHlinkClick = $document->getElement('a:hlinkClick', $oElementrPr);
                     if (is_object($oElementHlinkClick)) {
