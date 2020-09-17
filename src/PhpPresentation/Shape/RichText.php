@@ -252,7 +252,8 @@ class RichText extends AbstractShape implements ComparableInterface
     {
         $numParagraphs = count($this->richTextParagraphs);
         if ($numParagraphs > 0) {
-            $alignment   = clone $this->getActiveParagraph()->getAlignment();
+            //dissable causes issues with bullet lists that are not defined
+            //$alignment   = clone $this->getActiveParagraph()->getAlignment();
             $font        = clone $this->getActiveParagraph()->getFont();
             $bulletStyle = clone $this->getActiveParagraph()->getBulletStyle();
         }

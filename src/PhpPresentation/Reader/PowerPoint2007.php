@@ -1100,7 +1100,9 @@ class PowerPoint2007 implements ReaderInterface
                 $oParagraph->getAlignment()->setIndent(CommonDrawing::emuToPixels($oSubElement->getAttribute('indent')));
             }
 
-            $oParagraph->getBulletStyle()->setBulletType(Bullet::TYPE_NONE);
+            if (!$isList) {
+                $oParagraph->getBulletStyle()->setBulletType(Bullet::TYPE_NONE);
+            }
 
             $oElementBuFont = $document->getElement('a:buFont', $oSubElement);
             if ($oElementBuFont instanceof \DOMElement) {
