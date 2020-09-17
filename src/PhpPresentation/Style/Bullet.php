@@ -31,6 +31,7 @@ class Bullet implements ComparableInterface
     public const TYPE_NONE = 'none';
     public const TYPE_BULLET = 'bullet';
     public const TYPE_NUMERIC = 'numeric';
+    public const TYPE_PARENT = 'parent';
 
     /* Numeric bullet styles */
     public const NUMERIC_DEFAULT = 'arabicPeriod';
@@ -117,6 +118,8 @@ class Bullet implements ComparableInterface
      * @var int|string
      */
     private $bulletNumericStartAt;
+
+    private $bulletDisabled = false;
 
     /**
      * Hash index.
@@ -321,5 +324,24 @@ class Bullet implements ComparableInterface
         $this->bulletColor = $bulletColor;
 
         return $this;
+    }
+
+    /**
+     * @param $disabled
+     *
+     * @return $this
+     */
+    public function setBulletDisabled($disabled)
+    {
+        $this->bulletDisabled = $disabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBulletDisabled()
+    {
+        return $this->bulletDisabled;
     }
 }

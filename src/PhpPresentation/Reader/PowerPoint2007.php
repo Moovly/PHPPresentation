@@ -945,9 +945,13 @@ class PowerPoint2007 implements ReaderInterface
         }
 
         $arrayElements = $document->getElements('p:txBody/a:p', $node);
+        $isList = false;
+        if (count($arrayElements) > 1) {
+            $isList = true;
+        }
         foreach ($arrayElements as $oElement) {
             if ($oElement instanceof DOMElement) {
-                $this->loadParagraph($document, $oElement, $oShape);
+                $this->loadParagraph($document, $oElement, $oShape, $isList);
             }
         }
 
@@ -1030,7 +1034,7 @@ class PowerPoint2007 implements ReaderInterface
 
                 foreach ($document->getElements('a:txBody/a:p', $oElementCell) as $oElementPara) {
                     if ($oElementPara instanceof DOMElement) {
-                        $this->loadParagraph($document, $oElementPara, $oCell);
+                        $this->loadParagraph($document, $oElementPara, $oCell, false);
                     }
                 }
 
@@ -1095,13 +1099,23 @@ class PowerPoint2007 implements ReaderInterface
     }
 
     /**
+     * @param XMLReader     $document
+     * @param \DOMElement   $oElement
      * @param Cell|RichText $oShape
+     * @param bool          $isList
+     *
+     * @throws \Exception
      */
-    protected function loadParagraph(XMLReader $document, DOMElement $oElement, $oShape): void
+    protected function loadParagraph(XMLReader $document, DOMElement $oElement, $oShape, bool $isList)
     {
         // Core
         $oParagraph = $oShape->createParagraph();
         $oParagraph->setRichTextElements([]);
+
+        if ($isList) {
+            $oParagraph->getBulletStyle()->setBulletType(Bullet::TYPE_PARENT);
+            $oParagraph->getAlignment()->setVertical('t');
+        }
 
         $oSubElement = $document->getElement('a:pPr', $oElement);
         if ($oSubElement instanceof \DOMElement) {
@@ -1153,6 +1167,10 @@ class PowerPoint2007 implements ReaderInterface
                 if ($oElementBuFont->hasAttribute('typeface')) {
                     $oParagraph->getBulletStyle()->setBulletFont($oElementBuFont->getAttribute('typeface'));
                 }
+            }
+            $oElementBuChar = $document->getElement('a:buNone', $oSubElement);
+            if ($oElementBuChar instanceof \DOMElement) {
+                $oParagraph->getBulletStyle()->setBulletDisabled(true);
             }
             $oElementBuChar = $document->getElement('a:buChar', $oSubElement);
             if ($oElementBuChar instanceof DOMElement) {
