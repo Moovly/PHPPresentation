@@ -1160,6 +1160,10 @@ class PowerPoint2007 implements ReaderInterface
                 $oParagraph->setSpacingAfter($oElementSpacingAfter->getAttribute('val') / 100);
             }
 
+            if ($oParagraph->getAlignment()->getHorizontal() === 'ctr') {
+                $oParagraph->getBulletStyle()->setBulletType(Bullet::TYPE_NONE);
+            }
+
             if (!$isList) {
                 $oParagraph->getBulletStyle()->setBulletType(Bullet::TYPE_NONE);
             }
