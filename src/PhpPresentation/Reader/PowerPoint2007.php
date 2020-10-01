@@ -894,6 +894,12 @@ class PowerPoint2007 implements ReaderInterface
             }
             $oShape->setPlaceHolder($placeholder);
         }
+        $oElement = $document->getElement('p:nvSpPr/p:cNvPr', $node);
+        if ($oElement instanceof \DOMElement) {
+            if ($oElement->hasAttribute('name')) {
+                $oShape->setName($oElement->getAttribute('name'));
+            }
+        }
 
         $arrayElements = $document->getElements('p:txBody/a:lstStyle/*', $node);
         foreach ($arrayElements as $arrayElement) {

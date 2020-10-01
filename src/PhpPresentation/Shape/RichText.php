@@ -171,6 +171,9 @@ class RichText extends AbstractShape implements ComparableInterface
      */
     protected $textStyles;
 
+    /** @var string */
+    private $name;
+
     /**
      * Create a new \PhpOffice\PhpPresentation\Shape\RichText instance
      */
@@ -762,5 +765,25 @@ class RichText extends AbstractShape implements ComparableInterface
         }
 
         return md5($hashElements . $this->wrap . $this->autoFit . $this->horizontalOverflow . $this->verticalOverflow . ($this->upright ? '1' : '0') . ($this->vertical ? '1' : '0') . $this->columns . $this->bottomInset . $this->leftInset . $this->rightInset . $this->topInset . parent::getHashCode() . __CLASS__);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return RichText
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }
