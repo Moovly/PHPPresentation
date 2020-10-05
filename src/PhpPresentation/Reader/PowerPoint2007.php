@@ -851,6 +851,13 @@ class PowerPoint2007 implements ReaderInterface
             }
         }
 
+        $oElement = $document->getElement('p:spPr/a:solidFill/a:srgbClr/a:alpha', $node);
+        if ($oElement instanceof \DOMElement) {
+            if ($oElement->hasAttribute('val')) {
+                $oShape->getShadow()->setAlpha((int)$oElement->getAttribute('val') / 1000);
+            }
+        }
+
         $oElement = $document->getElement('p:spPr/a:prstGeom', $node);
         if ($oElement instanceof \DOMElement && $oElement->hasAttribute('prst')) {
             $oShape->setGeometryPreset($oElement->getAttribute('prst'));
