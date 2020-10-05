@@ -1348,6 +1348,9 @@ class PowerPoint2007 implements ReaderInterface
                 case 'p:pic':
                     $this->loadShapeDrawing($xmlReader, $oNode, $oSlide);
                     break;
+                case 'p:cxnSp':
+                    $this->loadGeometry($xmlReader, $oNode, $oSlide);
+                    break;
                 case 'p:sp':
                     $this->loadShapeRichText($xmlReader, $oNode, $oSlide);
                     break;
@@ -1406,5 +1409,26 @@ class PowerPoint2007 implements ReaderInterface
             }
         }
         return $oRTParagraph;
+    }
+
+    /**
+     * @param XMLReader $document
+     * @param \DOMElement $node
+     * @param AbstractSlide $oSlide
+     * @throws \Exception
+     */
+    protected function loadGeometry(XMLReader $document, \DOMElement $node, AbstractSlide $oSlide)
+    {
+        $oShape = new Gd();
+        $oShape->getShadow()->setVisible(false);
+
+        $oElement = $document->getElement('p:nvCxnSpPr/p:cNvPr', $node);
+        if ($oElement instanceof \DOMElement) {
+            $oShape->setName($oElement->hasAttribute('name') ? $oElement->getAttribute('name') : '');
+            $oShape->setDescription($oElement->hasAttribute('descr') ? $oElement->getAttribute('descr') : '');
+        }
+        $oShape->setMimeType('ppt/geometry');
+
+        $oSlide->addShape($oShape);
     }
 }
