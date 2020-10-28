@@ -28,7 +28,11 @@
     "require-dev": {
         "phpunit/phpunit": ">=7.0",
         "phpmd/phpmd": "2.*",
-        "phpstan/phpstan": "^0.12.88"
+        "phpstan/phpstan": "^0.12.88",
+        "sebastian/phpcpd": "^6.0",
+        "phploc/phploc": "2.*",
+        "squizlabs/php_codesniffer": "2.*",
+        "codeclimate/php-test-reporter": "dev-master"
     },
     "suggest": {
         "ext-gd": "Required to add images"
