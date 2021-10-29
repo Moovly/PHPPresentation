@@ -526,12 +526,66 @@ class PowerPoint2007 implements ReaderInterface
                         if (!($oElementLvl instanceof \DOMElement) || $oElementLvl->nodeName == 'a:extLst') {
                             continue;
                         }
-                        //@TODO FIX this
-                        /**
-                        if ($oElementLvlDefRPR->hasAttribute('i') && 1 == $oElementLvlDefRPR->getAttribute('i')) {
-                            $oRTParagraph->getFont()->setItalic(true);
+                        $oRTParagraph = new Paragraph();
+
+                        if ('a:defPPr' == $oElementLvl->nodeName) {
+                            $level = 0;
+                        } else {
+                            $level = str_replace('a:lvl', '', $oElementLvl->nodeName);
+                            $level = str_replace('pPr', '', $level);
+                            $level = intval($level);
                         }
-                        **/
+
+                        if ($oElementLvl->hasAttribute('algn')) {
+                            $oRTParagraph->getAlignment()->setHorizontal($oElementLvl->getAttribute('algn'));
+                        }
+                        if ($oElementLvl->hasAttribute('marL')) {
+                            $val = (int) $oElementLvl->getAttribute('marL');
+                            $val = CommonDrawing::emuToPixels((int) $val);
+                            $oRTParagraph->getAlignment()->setMarginLeft($val);
+                        }
+                        if ($oElementLvl->hasAttribute('marR')) {
+                            $val = (int) $oElementLvl->getAttribute('marR');
+                            $val = CommonDrawing::emuToPixels((int) $val);
+                            $oRTParagraph->getAlignment()->setMarginRight($val);
+                        }
+                        if ($oElementLvl->hasAttribute('indent')) {
+                            $val = (int) $oElementLvl->getAttribute('indent');
+                            $val = CommonDrawing::emuToPixels((int) $val);
+                            $oRTParagraph->getAlignment()->setIndent($val);
+                        }
+                        $oElementLvlDefRPR = $xmlReader->getElement('a:defRPr', $oElementLvl);
+                        if ($oElementLvlDefRPR instanceof DOMElement) {
+                            if ($oElementLvlDefRPR->hasAttribute('sz')) {
+                                $oRTParagraph->getFont()->setSize($oElementLvlDefRPR->getAttribute('sz') / 100);
+                            }
+                            if ($oElementLvlDefRPR->hasAttribute('b') && 1 == $oElementLvlDefRPR->getAttribute('b')) {
+                                $oRTParagraph->getFont()->setBold(true);
+                            }
+                            if ($oElementLvlDefRPR->hasAttribute('i') && 1 == $oElementLvlDefRPR->getAttribute('i')) {
+                                $oRTParagraph->getFont()->setItalic(true);
+                            }
+                        }
+                        $oElementSchemeColor = $xmlReader->getElement('a:defRPr/a:solidFill/a:schemeClr', $oElementLvl);
+                        if ($oElementSchemeColor instanceof DOMElement) {
+                            if ($oElementSchemeColor->hasAttribute('val')) {
+                                $oSchemeColor = new SchemeColor();
+                                $oSchemeColor->setValue($oElementSchemeColor->getAttribute('val'));
+                                $oRTParagraph->getFont()->setColor($oSchemeColor);
+                            }
+                        }
+
+                        switch ($oElementTxStyle->nodeName) {
+                            case 'p:bodyStyle':
+                                $oSlideMaster->getTextStyles()->setBodyStyleAtLvl($oRTParagraph, $level);
+                                break;
+                            case 'p:otherStyle':
+                                $oSlideMaster->getTextStyles()->setOtherStyleAtLvl($oRTParagraph, $level);
+                                break;
+                            case 'p:titleStyle':
+                                $oSlideMaster->getTextStyles()->setTitleStyleAtLvl($oRTParagraph, $level);
+                                break;
+                        }
                     }
                     $oElementSchemeColor = $xmlReader->getElement('a:defRPr/a:solidFill/a:schemeClr', $oElementLvl);
                     if ($oElementSchemeColor instanceof DOMElement) {
