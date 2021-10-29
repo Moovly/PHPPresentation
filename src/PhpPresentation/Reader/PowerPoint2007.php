@@ -528,6 +528,13 @@ class PowerPoint2007 implements ReaderInterface
                         }
                         $oRTParagraph = new Paragraph();
 
+                         if ('a:defPPr' == $oElementLvl->nodeName) {
+                            $level = 0;
+                        } else {
+                            $level = str_replace('a:lvl', '', $oElementLvl->nodeName);
+                            $level = str_replace('pPr', '', $level);
+                            $level = intval($level);
+                        }
                         switch ($oElementTxStyle->nodeName) {
                             case 'p:bodyStyle':
                                 $oSlideMaster->getTextStyles()->setBodyStyleAtLvl($oRTParagraph, $level);
