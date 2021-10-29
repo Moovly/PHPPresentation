@@ -537,6 +537,7 @@ class PowerPoint2007 implements ReaderInterface
                             $oSchemeColor->setValue($oElementSchemeColor->getAttribute('val'));
                             $oRTParagraph->getFont()->setColor($oSchemeColor);
                         }
+                    }
 
                     switch ($oElementTxStyle->nodeName) {
                         case 'p:bodyStyle':
