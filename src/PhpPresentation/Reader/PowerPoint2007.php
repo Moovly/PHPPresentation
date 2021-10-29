@@ -526,9 +526,12 @@ class PowerPoint2007 implements ReaderInterface
                         if (!($oElementLvl instanceof \DOMElement) || $oElementLvl->nodeName == 'a:extLst') {
                             continue;
                         }
+                        //@TODO FIX this
+                        /**
                         if ($oElementLvlDefRPR->hasAttribute('i') && 1 == $oElementLvlDefRPR->getAttribute('i')) {
                             $oRTParagraph->getFont()->setItalic(true);
                         }
+                        **/
                     }
                     $oElementSchemeColor = $xmlReader->getElement('a:defRPr/a:solidFill/a:schemeClr', $oElementLvl);
                     if ($oElementSchemeColor instanceof DOMElement) {
@@ -932,12 +935,12 @@ class PowerPoint2007 implements ReaderInterface
 
         $oElement = $document->getElement('p:nvSpPr/p:nvPr/p:ph', $node);
         if ($oElement instanceof DOMElement) {
-            $placeholder = new Placeholder(null);
+            $placeholder = new Placeholder('default');
             if ($oElement->hasAttribute('type')) {
                 $placeholder->setType($oElement->getAttribute('type'));
             }
             if ($oElement->hasAttribute('idx')) {
-                $placeholder->setIdx($oElement->getAttribute('idx'));
+                $placeholder->setIdx((int) $oElement->getAttribute('idx'));
             }
             $oShape->setPlaceHolder($placeholder);
         }
@@ -1418,6 +1421,9 @@ class PowerPoint2007 implements ReaderInterface
      */
     protected function loadSlideShapes($oSlide, DOMNodeList $oElements, XMLReader $xmlReader): void
     {
+        if ($oSlide instanceof Note) {
+            return;
+        }
         foreach ($oElements as $oNode) {
             if (!($oNode instanceof DOMElement)) {
                 continue;
@@ -1456,17 +1462,17 @@ class PowerPoint2007 implements ReaderInterface
         }
         if ($oElementLvl->hasAttribute('marL')) {
             $val = $oElementLvl->getAttribute('marL');
-            $val = CommonDrawing::emuToPixels($val);
+            $val = CommonDrawing::emuToPixels((int) $val);
             $oRTParagraph->getAlignment()->setMarginLeft($val);
         }
         if ($oElementLvl->hasAttribute('marR')) {
             $val = $oElementLvl->getAttribute('marR');
-            $val = CommonDrawing::emuToPixels($val);
+            $val = CommonDrawing::emuToPixels((int) $val);
             $oRTParagraph->getAlignment()->setMarginRight($val);
         }
         if ($oElementLvl->hasAttribute('indent')) {
             $val = $oElementLvl->getAttribute('indent');
-            $val = CommonDrawing::emuToPixels($val);
+            $val = CommonDrawing::emuToPixels((int) $val);
             $oRTParagraph->getAlignment()->setIndent($val);
         }
         $oElementLvlDefRPR = $xmlReader->getElement('a:defRPr', $oElementLvl);
