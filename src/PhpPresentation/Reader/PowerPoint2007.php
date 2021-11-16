@@ -684,8 +684,12 @@ class PowerPoint2007 implements ReaderInterface
             $oSlide->setBackground($oBackground);
         }
 
-        // Background scheme color
+        // Background scheme color from bgRef
         $oElementSchemeColor = $xmlReader->getElement('p:bgRef/a:schemeClr', $oElement);
+        if (is_null($oElementSchemeColor)) {
+            $oElementSchemeColor = $xmlReader->getElement('p:bgPr/a:solidFill/a:schemeClr', $oElement);
+        }
+
         if ($oElementSchemeColor instanceof DOMElement) {
             // Color
             $oColor = new SchemeColor();
