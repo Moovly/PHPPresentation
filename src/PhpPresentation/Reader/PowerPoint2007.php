@@ -974,8 +974,8 @@ class PowerPoint2007 implements ReaderInterface
 
         $arrayElements = $document->getElements('p:txBody/a:lstStyle/*', $node);
         foreach ($arrayElements as $arrayElement) {
-            $level = (int)str_replace('a:lvl', '', $arrayElement->nodeName);
-            $level = (int)str_replace('pPr', '', $level);
+            $level = (int)str_replace('a:lvl', '', (string)$arrayElement->nodeName);
+            $level = (int)str_replace('pPr', '', (string)$level);
             $oShape->setTextStyles(new TextStyle(false));
 
             $oRTParagraph = $this->createParagraphFromStyle($document, $arrayElement);
