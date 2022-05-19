@@ -1191,11 +1191,11 @@ class PowerPoint2007 implements ReaderInterface
             }
             $oElementSpacingBefore = $document->getElement('a:spcBef/a:spcPts', $oSubElement);
             if ($oElementSpacingBefore instanceof DOMElement) {
-                $oParagraph->setSpacingBefore($oElementSpacingBefore->getAttribute('val') / 100);
+                $oParagraph->setSpacingBefore((int)round($oElementSpacingBefore->getAttribute('val') / 100));
             }
             $oElementSpacingAfter = $document->getElement('a:spcAft/a:spcPts', $oSubElement);
             if ($oElementSpacingAfter instanceof DOMElement) {
-                $oParagraph->setSpacingAfter($oElementSpacingAfter->getAttribute('val') / 100);
+                $oParagraph->setSpacingAfter((int)round($oElementSpacingAfter->getAttribute('val') / 100));
             }
 
             if ($oParagraph->getAlignment()->getHorizontal() === 'ctr') {
