@@ -1334,7 +1334,7 @@ class PowerPoint2007 implements ReaderInterface
     protected function loadStyleBorder(XMLReader $xmlReader, DOMElement $oElement, Border $oBorder): void
     {
         if ($oElement->hasAttribute('w')) {
-            $oBorder->setLineWidth($oElement->getAttribute('w') / 12700);
+            $oBorder->setLineWidth((int) round($oElement->getAttribute('w') / 12700));
         }
         if ($oElement->hasAttribute('cmpd')) {
             $oBorder->setLineStyle($oElement->getAttribute('cmpd'));
