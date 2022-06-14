@@ -918,7 +918,7 @@ class PowerPoint2007 implements ReaderInterface
         $oElement = $document->getElement('p:spPr/a:solidFill/a:srgbClr/a:alpha', $node);
         if ($oElement instanceof \DOMElement) {
             if ($oElement->hasAttribute('val')) {
-                $oShape->getShadow()->setAlpha((int)$oElement->getAttribute('val') / 1000);
+                $oShape->getShadow()->setAlpha((int) round($oElement->getAttribute('val') / 1000));
             }
         }
 
@@ -1499,7 +1499,7 @@ class PowerPoint2007 implements ReaderInterface
         $oElementLvlDefRPR = $xmlReader->getElement('a:defRPr', $oElementLvl);
         if ($oElementLvlDefRPR instanceof \DOMElement) {
             if ($oElementLvlDefRPR->hasAttribute('sz')) {
-                $oRTParagraph->getFont()->setSize($oElementLvlDefRPR->getAttribute('sz') / 100);
+                $oRTParagraph->getFont()->setSize((int) round($oElementLvlDefRPR->getAttribute('sz') / 100));
             }
             if ($oElementLvlDefRPR->hasAttribute('b') && $oElementLvlDefRPR->getAttribute('b') == 1) {
                 $oRTParagraph->getFont()->setBold(true);
